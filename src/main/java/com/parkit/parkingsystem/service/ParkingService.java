@@ -97,7 +97,7 @@ public class ParkingService {
         }
     }
 
-    public void processExitingVehicle() {
+    public void processExitingVehicle(Date dateOut) {
         try{
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
