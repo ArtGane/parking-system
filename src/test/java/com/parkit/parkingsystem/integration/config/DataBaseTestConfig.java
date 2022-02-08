@@ -14,7 +14,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/test?zeroDateTimeBehaviour=CONVERT_TO_NULL&serverTimezone=UTC","root","rootroot");
+                "jdbc:mysql://localhost:3306/test?zeroDateTimeBehaviour=CONVERT_TO_NULL&serverTimezone=UTC","root","root");
     }
 
     public void closeConnection(Connection con){
