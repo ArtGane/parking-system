@@ -1,7 +1,7 @@
 package com.parkit.parkingsystem.integration;
 
-import com.parkit.parkingsystem.dao.ParkingSpotDAO;
-import com.parkit.parkingsystem.dao.TicketDAO;
+import com.parkit.parkingsystem.unitaire.dao.ParkingSpotDAO;
+import com.parkit.parkingsystem.unitaire.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
@@ -15,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -69,18 +67,30 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingLotExit() throws InterruptedException {
-        Date dateOut = new Date();
-        dateOut.setTime(System.currentTimeMillis() + (45 * 60 * 1000));
+        testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        parkingService.processIncomingVehicle();
-        parkingService.processExitingVehicle(dateOut);
+        parkingService.processExitingVehicle();
 
         //TODO: check that the fare generated and out time are populated correctly in the database
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
-        Date ticketOut = ticket.getOutTime();
         double priceSpot = ticket.getPrice();
 
-        assertNotNull(ticketOut);
-        assertTrue(priceSpot == 1.125);
+        assertTrue(priceSpot == 0 && ticket.getOutTime() != null);
     }
+
+    @Test
+    public void testGetNextAvailableSlot() throws InterruptedException {
+
+    }
+
+//    @Test
+//    public void testUpdateParking() {
+//        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+//        parkingService.processIncomingVehicle();
+//        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+//        ParkingSpot spot = ticket.getParkingSpot();
+//
+//        parkingSpotDAO = new ParkingSpotDAO();
+//        boolean update = parkingSpotDAO.updateParking(spot);
+//    }
 }
