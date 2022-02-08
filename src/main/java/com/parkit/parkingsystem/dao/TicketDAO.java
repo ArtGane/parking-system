@@ -1,4 +1,4 @@
-package com.parkit.parkingsystem.unitaire.dao;
+package com.parkit.parkingsystem.dao;
 
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
@@ -34,7 +34,7 @@ public class TicketDAO {
             return ps.execute();
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
-        }finally {
+        } finally {
             dataBaseConfig.closeConnection(con);
             return false;
         }
