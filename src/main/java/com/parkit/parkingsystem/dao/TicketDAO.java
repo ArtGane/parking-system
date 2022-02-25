@@ -38,7 +38,7 @@ public class TicketDAO {
             dataBaseConfig.closeConnection(con);
             return false;
         }
-    }
+    } // a corriger
 
     public Ticket getTicket(String vehicleRegNumber) {
         Connection con = null;

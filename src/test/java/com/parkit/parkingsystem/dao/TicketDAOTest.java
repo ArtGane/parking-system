@@ -6,6 +6,8 @@ import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -30,22 +32,38 @@ class TicketDAOTest {
         ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR,true));
     }
 
+    @BeforeEach
+    private void clearDB() {
+        dataBasePrepareService.clearDataBaseEntries();
+    }
+
     @Test
     void testSaveTicketFalse() {
         boolean ticketSave = ticketDAO.saveTicket(ticket);
         assertFalse(ticketSave);
     }
 
-    @Test
-    void testGetTicket() {
-        Ticket getTicket = ticketDAO.getTicket("ABCDE");
-        assertNotNull(getTicket);
-    }
+    @Nested
+    public class InternalTicketDaoTest {
 
-    @Test
-    void testUpdateTicket() {
-        ticket.setOutTime(new Date());
-        boolean updateTicket = ticketDAO.updateTicket(ticket);
-        assertTrue(updateTicket);
+        @BeforeEach
+        public void init() {
+            ticketDAO.saveTicket(ticket);
+        }
+
+        @Test
+        void testGetTicket() {
+            Ticket getTicket = ticketDAO.getTicket("ABCDE");
+            assertNotNull(getTicket);
+        }
+
+        @Test
+        void testUpdateTicket() {
+            Ticket getTicket = ticketDAO.getTicket("ABCDE");
+            getTicket.setOutTime(new Date());
+            getTicket.setPrice(666);
+            boolean updateTicket = ticketDAO.updateTicket(getTicket);
+            assertTrue(updateTicket);
+        }
     }
 }
