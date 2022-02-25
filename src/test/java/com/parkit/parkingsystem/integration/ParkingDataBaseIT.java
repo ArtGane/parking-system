@@ -1,7 +1,7 @@
 package com.parkit.parkingsystem.integration;
 
-import com.parkit.parkingsystem.unitaire.dao.ParkingSpotDAO;
-import com.parkit.parkingsystem.unitaire.dao.TicketDAO;
+import com.parkit.parkingsystem.dao.ParkingSpotDAO;
+import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
