@@ -16,48 +16,45 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
-    private static ParkingService parkingService;
     private static ParkingSpot parkingSpot;
 
     @Mock
-    private static InputReaderUtil inputReaderUtil;
+    private InputReaderUtil inputReaderUtil;
 
     @Mock
-    private static ParkingSpotDAO parkingSpotDAO;
+    private ParkingSpotDAO parkingSpotDAO;
 
     @Mock
-    private static TicketDAO ticketDAO;
+    private TicketDAO ticketDAO;
+
+    private ParkingService parkingService;
+
+    @Mock
+    private Ticket ticket = new Ticket();
 
     @BeforeEach
     private void setUpPerTest() {
         try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             when(inputReaderUtil.readSelection()).thenReturn(1);
             parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-            Ticket ticket = new Ticket();
             ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
             ticket.setParkingSpot(parkingSpot);
-            ticket.setVehicleRegNumber("ABCDEF");
-//            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-//            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-            //org.mockito.exceptions.misusing.UnnecessaryStubbingException:
-            //Unnecessary stubbings detected
-            //tant que pas utilisé = cassé
-            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-
+            ticket.setVehicleRegNumber("ABCDE");
             when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
-            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to set up test mock objects");
         }
     }
+
 
     @Test
     public void testProcessIncomingVehicle() {
@@ -68,12 +65,13 @@ public class ParkingServiceTest {
 
     @Test
     public void testGetNextParkingNumberIfAvailable() {
-        parkingService.getNextParkingNumberIfAvailable();
-        assertTrue(parkingSpot.isAvailable());
+        ParkingSpot expected = parkingService.getNextParkingNumberIfAvailable();
+        assertTrue(expected.isAvailable());
     }
 
     @Test
     public void testProcessExitingVehicleTest() {
+        parkingService.processIncomingVehicle();
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
