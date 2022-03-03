@@ -8,10 +8,7 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,7 +29,7 @@ public class ParkingDataBaseIT {
     private ParkingSpot parkingSpot;
 
     @BeforeAll
-    private static void setUp() throws Exception {
+    private static void setUp() {
         parkingSpotDAO = new ParkingSpotDAO();
         parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         ticketDAO = new TicketDAO();
@@ -57,7 +54,7 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
 
-        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+        // check that a ticket is actualy saved in DB and Parking table is updated with availability
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
         ParkingSpot avaibleSpot = ticket.getParkingSpot();
 
@@ -65,32 +62,45 @@ public class ParkingDataBaseIT {
         assertFalse(avaibleSpot.isAvailable());
     }
 
+    // pas le même ticket entre setuppertest et celui du test ?
     @Test
-    public void testParkingLotExit() throws InterruptedException {
+    public void testParkingLotExit() {
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processExitingVehicle();
 
-        //TODO: check that the fare generated and out time are populated correctly in the database
+        // check that the fare generated and out time are populated correctly in the database
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
         double priceSpot = ticket.getPrice();
 
-        assertTrue(priceSpot == 0 && ticket.getOutTime() != null);
+        assertTrue(priceSpot == 0.0 && ticket.getOutTime() != null);
     }
 
     @Test
-    public void testGetNextAvailableSlot() throws InterruptedException {
+    public void testGetNextAvailableSlot() {
 
     }
 
-//    @Test
-//    public void testUpdateParking() {
-//        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-//        parkingService.processIncomingVehicle();
-//        Ticket ticket = ticketDAO.getTicket("ABCDEF");
-//        ParkingSpot spot = ticket.getParkingSpot();
-//
-//        parkingSpotDAO = new ParkingSpotDAO();
-//        boolean update = parkingSpotDAO.updateParking(spot);
-//    }
+    @Test
+    public void testUpdateParking() {
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+        ParkingSpot spot = ticket.getParkingSpot();
+
+        parkingSpotDAO = new ParkingSpotDAO();
+        boolean update = parkingSpotDAO.updateParking(spot);
+
+        assertTrue(update);
+    }
+
+    // TODO
+    @Nested
+    public class InternalParkingDataBaseIT {
+
+        @BeforeEach
+        public void init() {
+            //scénarios alternatifs s'inspirer de setUpPerTest
+        }
+    }
 }
