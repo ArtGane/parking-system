@@ -29,7 +29,7 @@ class TicketDAOTest {
         dataBasePrepareService = new DataBasePrepareService();
         ticket.setInTime(new Date());
         ticket.setVehicleRegNumber("ABCDE");
-        ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR,true));
+        ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, true));
     }
 
     @BeforeEach
@@ -64,6 +64,12 @@ class TicketDAOTest {
             getTicket.setPrice(666);
             boolean updateTicket = ticketDAO.updateTicket(getTicket);
             assertTrue(updateTicket);
+        }
+
+        @Test
+        void testGetWrongTicket() {
+            Ticket getTicket = ticketDAO.getTicket("FGHIJ");
+            assertEquals(getTicket, null);
         }
     }
 }
