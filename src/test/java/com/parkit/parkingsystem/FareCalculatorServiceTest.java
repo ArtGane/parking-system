@@ -2,6 +2,9 @@ package com.parkit.parkingsystem;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.dao.TicketDAO;
+import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
+import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
@@ -14,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
@@ -22,9 +26,10 @@ public class FareCalculatorServiceTest extends MockitoExtension {
 
     private static FareCalculatorService fareCalculatorService;
     private Ticket ticket;
+    private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
     @Mock
-    private static InputReaderUtil inputReaderUtil;
+    private static TicketDAO ticketDao;
 
     @BeforeAll
     private static void setUp() {
@@ -156,12 +161,21 @@ public class FareCalculatorServiceTest extends MockitoExtension {
 
         @BeforeEach
         public void init() {
-            when(inputReaderUtil.readSelection()).thenReturn(1, 5);
+            when(ticketDao.countTicket("ABCDE")).thenReturn(5);
         }
 
         @Test
         public void testCalculateFareCarWithFidelityReduction() {
+            Date inTime = new Date();
+            inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
+            Date outTime = new Date();
+            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 
+            ticket.setInTime(inTime);
+            ticket.setOutTime(outTime);
+            ticket.setParkingSpot(parkingSpot);
+            fareCalculatorService.calculateFare(ticket);
+            assertEquals(ticket.getPrice(), Fare.CAR_RATE_PER_HOUR);
         }
     }
 }
