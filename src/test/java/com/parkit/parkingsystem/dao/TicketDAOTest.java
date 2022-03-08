@@ -38,9 +38,9 @@ class TicketDAOTest {
     }
 
     @Test
-    void testSaveTicketFalse() {
+    void testSaveTicketTrue() {
         boolean ticketSave = ticketDAO.saveTicket(ticket);
-        assertFalse(ticketSave);
+        assertTrue(ticketSave);
     }
 
     @Nested
@@ -54,7 +54,7 @@ class TicketDAOTest {
         @Test
         void testGetTicket() {
             Ticket getTicket = ticketDAO.getTicket("ABCDE");
-            assertNotNull(getTicket);
+            assertEquals(getTicket.getVehicleRegNumber(), "ABCDE");
         }
 
         @Test
@@ -67,9 +67,14 @@ class TicketDAOTest {
         }
 
         @Test
+        void testCountTicker() {
+            assertEquals(1, ticketDAO.countTicket("ABCDE"));
+        }
+
+        @Test
         void testGetWrongTicket() {
             Ticket getTicket = ticketDAO.getTicket("FGHIJ");
-            assertEquals(getTicket, null);
+            assertNull(getTicket);
         }
     }
 }

@@ -26,7 +26,6 @@ public class ParkingDataBaseIT {
 
     @Mock
     private static InputReaderUtil inputReaderUtil;
-    private ParkingSpot parkingSpot;
 
     @BeforeAll
     private static void setUp() {
@@ -62,7 +61,6 @@ public class ParkingDataBaseIT {
         assertFalse(avaibleSpot.isAvailable());
     }
 
-    // pas le même ticket entre setuppertest et celui du test ?
     @Test
     public void testParkingLotExit() {
         testParkingACar();
@@ -99,8 +97,19 @@ public class ParkingDataBaseIT {
     public class InternalParkingDataBaseIT {
 
         @BeforeEach
-        public void init() {
-            //scénarios alternatifs s'inspirer de setUpPerTest
+        public void init() throws Exception {
+            when(inputReaderUtil.readSelection()).thenReturn(1);
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         }
+    }
+
+    @Test//(expectedExceptions = NullPointerException.class)
+    public void testParkingACarWrong() {
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+
+        Ticket ticket = ticketDAO.getTicket("GHIJKL");
+
+        assertNull(ticket, "le ticket est null"); // Place du ticket non disponible
     }
 }

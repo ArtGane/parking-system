@@ -23,8 +23,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
-    private static ParkingSpot parkingSpot;
-
     @Mock
     private InputReaderUtil inputReaderUtil;
 
@@ -36,25 +34,12 @@ public class ParkingServiceTest {
 
     private ParkingService parkingService;
 
-    @Mock
-    private Ticket ticket = new Ticket();
-
     @BeforeEach
     private void setUpPerTest() {
-        try {
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             when(inputReaderUtil.readSelection()).thenReturn(1);
-            parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-            ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
-            ticket.setParkingSpot(parkingSpot);
-            ticket.setVehicleRegNumber("ABCDE");
             when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to set up test mock objects");
-        }
     }
-
 
     @Test
     public void testProcessIncomingVehicle() {
