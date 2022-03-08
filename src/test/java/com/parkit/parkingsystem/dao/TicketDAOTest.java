@@ -68,7 +68,8 @@ class TicketDAOTest {
 
         @Test
         void testCountTicker() {
-            assertEquals(1, ticketDAO.countTicket("ABCDE"));
+            int countTicket = ticketDAO.countTicket("ABCDE");
+            assertEquals(1, countTicket);
         }
 
         @Test
