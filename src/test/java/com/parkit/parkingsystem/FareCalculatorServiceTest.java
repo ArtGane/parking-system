@@ -175,7 +175,7 @@ public class FareCalculatorServiceTest extends MockitoExtension {
             ticket.setOutTime(outTime);
             ticket.setParkingSpot(parkingSpot);
             fareCalculatorService.calculateFare(ticket);
-            assertEquals(ticket.getPrice(), Fare.CAR_RATE_PER_HOUR);
+            assertEquals((Fare.BIKE_RATE_PER_HOUR)  * 0.05, ticket.getPrice());
         }
     }
 }
