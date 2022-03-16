@@ -1,7 +1,6 @@
 package com.parkit.parkingsystem.service;
 
 import com.parkit.parkingsystem.constants.Fare;
-import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
@@ -14,7 +13,7 @@ public class FareCalculatorService {
             throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
         }
 
-
+        int nbTicket = ticketDAO.countTicket(ticket.getVehicleRegNumber());
         long inMillis = ticket.getInTime().getTime();
         long outMillis = ticket.getOutTime().getTime();
 
@@ -26,7 +25,7 @@ public class FareCalculatorService {
             ticket.setPrice(Fare.PRICE_FREE);
             System.out.println("free spot, have a nice day");
         } else {
-            if (ticketDAO.countTicket(ticket.getVehicleRegNumber()) <= 5) {
+            if (nbTicket > 5) {
                 switch (ticket.getParkingSpot().getParkingType()) {
                     case CAR: {
                         ticket.setPrice((duration * Fare.CAR_RATE_PER_HOUR) - ((duration * Fare.CAR_RATE_PER_HOUR)  * 0.05));
