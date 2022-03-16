@@ -74,25 +74,6 @@ public class ParkingDataBaseIT {
         assertTrue(priceSpot == 0.0 && ticket.getOutTime() != null);
     }
 
-    @Test
-    public void testUpdateParking() {
-        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        parkingService.processIncomingVehicle();
-        Ticket ticket = ticketDAO.getTicket("ABCDEF");
-        ParkingSpot spot = ticket.getParkingSpot();
-
-        parkingSpotDAO = new ParkingSpotDAO();
-        boolean update = parkingSpotDAO.updateParking(spot);
-
-        assertTrue(update);
-    }
-
-    @Test
-    public void testGetNextAvailableSlot() {
-        int nextSlot = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-        assertEquals(1, nextSlot);
-    }
-
     @Nested
     public class InternalParkingDataBaseIT {
 

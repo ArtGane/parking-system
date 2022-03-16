@@ -35,11 +35,6 @@ class ParkingSpotDAOTest {
         assertEquals(nextParkingSpot, 1);
     }
 
-//    @Test
-//    void testGetNextNotAvailableSlot() {
-//
-//    }
-
     @Test
     void testUpdateParking() {
         boolean updateParking = parkingSpotDAO.updateParking(parkingSpot);
