@@ -74,7 +74,7 @@ public class FareCalculatorServiceTest {
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
-        assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
+        assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
     }
 
     @Test
@@ -157,9 +157,8 @@ public class FareCalculatorServiceTest {
     @Nested
     public class InternalFareCalculatorServiceTestFidelity {
 
-        @BeforeEach
         public void init() {
-            for (int i = 0; i <= 5; i++ ) {
+            for (int i = 0; i < 5; i++ ) {
                 Ticket ticket = new Ticket();
                 ticket.setVehicleRegNumber("FGHIJ");
                 ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
@@ -179,6 +178,7 @@ public class FareCalculatorServiceTest {
 
         @Test
         public void testCalculateFareCarWithFidelityReduction() {
+            init();
             Date inTime = new Date();
             inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
             Date outTime = new Date();
@@ -196,9 +196,8 @@ public class FareCalculatorServiceTest {
     @Nested
     public class InternalFareCalculatorServiceTestWithoutFidelity {
 
-        @BeforeEach
         public void init() {
-            for (int i = 0; i < 3; i++ ) {
+            for (int i = 0; i < 4; i++ ) {
                 Ticket ticket = new Ticket();
                 ticket.setVehicleRegNumber("KLMNO");
                 ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
@@ -218,6 +217,7 @@ public class FareCalculatorServiceTest {
 
         @Test
         public void testCalculateFareCarWithoutFidelityReduction() {
+            init();
             Date inTime = new Date();
             inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
             Date outTime = new Date();
